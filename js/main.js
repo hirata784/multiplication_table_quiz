@@ -5,6 +5,7 @@ const next = document.getElementById("js-next");
 const result = document.getElementById("js-result");
 const score = document.getElementById("js-score");
 const correct = document.getElementById("js-correct");
+const countDown = document.getElementById("js-countdown");
 
 // 問題数
 const sum = 3;
@@ -16,10 +17,13 @@ let num1 = Math.floor(Math.random() * 9) + 1;
 let num2 = Math.floor(Math.random() * 9) + 1;
 // 正解数
 let scoreNum = 0;
+// タイマーの時間
+let remaining = 10;
 
 window.addEventListener("DOMContentLoaded", read)
 submit.addEventListener("click", answerSubmit);
 next.addEventListener("click", answerNext);
+const timerId = setInterval(timer, 1000);
 
 // ページ読み込みと同時に処理
 function read() {
@@ -28,6 +32,21 @@ function read() {
     question.innerText = "問題：" + formula + "=?";
     // 正解数表示欄を作成
     score.innerText = "";
+}
+
+// カウントダウン
+function timer() {
+    countDown.textContent = "残り時間：" + remaining;
+    if (remaining <= 0) {
+        // カウントダウン停止
+        clearInterval(timerId);
+        alert("残念！時間切れです！");
+        // 回答ボタンを非表示
+        submit.disabled = true;
+        // 次の問題ボタンを非表示
+        next.disabled = true;
+    }
+    remaining--;
 }
 
 // 回答ボタンクリック時に処理
@@ -59,6 +78,8 @@ function answerSubmit() {
         correct.innerText = sum + "問中" + scoreNum + "問正解"
         // 回答ボタンを非表示
         next.disabled = true;
+        // カウントダウン停止
+        clearInterval(timerId);
     } else {
         // 出題数+1
         questionNum += 1;
